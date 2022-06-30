@@ -3,10 +3,10 @@ export class BluetoothAdapter {
     
     constructor(){}
 
-    function  connect() {}
-    function  disconnect() {}
-    function  write() {}
-    function getBLEObj() {}
+    connect() {}
+    disconnect() {}
+    write() {}
+    getBLEObj() {}
 
 }
 
@@ -15,10 +15,10 @@ export class BluetoothModule {
 
     constructor(){}
     
-    function getDevice(){}
-    function disconnectDevice(){}
-    function listenForDevice(){}
-    function connectDevice(){}
+    getDevice(){}
+    disconnectDevice(){}
+    listenForDevice(){}
+    connectDevice(){}
 
 }
 

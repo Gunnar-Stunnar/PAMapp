@@ -11,8 +11,8 @@ function initializeGlobalContext(){
     
     // global services object
     const contextualVariable = {
-        'bluetooth':BluetoothModule(),
-        'Storage':StorageModule()
+        'bluetooth':new BluetoothModule(),
+        'Storage':new StorageModule()
     }
     
     globalContext = createContext(contextualVariable);
@@ -24,7 +24,7 @@ const getGlobalContext = () => globalContext;
 
 // export public fields
 export default {
-    ...initializeGlobalContext,
-    ...getGlobalContext
+    'initializeGlobalContext' : initializeGlobalContext,
+    'getGlobalContext' : getGlobalContext
 }
 
