@@ -36,6 +36,7 @@ const navStyle = StyleSheet.create({
     container: {
         flexDirection: "row",
         backgroundColor: "#0000",
+        
     },
     title: {
         flex: 2,

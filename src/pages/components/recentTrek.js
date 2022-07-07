@@ -100,8 +100,8 @@ const RecentTreks = (props) => {
             <View width={15}/>
             {
                 // generate top n amount of recent Treks
-                example_treks.map((e)=>{
-                    return <TrekBlock  trekObj={e}/>
+                example_treks.map((e,i)=>{
+                    return <TrekBlock  trekObj={e} key={i}/>
                 })
 
             }
