@@ -1,26 +1,29 @@
 import React from 'react';
-import { SectionList, SafeAreaView } from 'react-native';
+import { SectionList, View, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import styles from '../../style/skeleton';
 
-const sectionTitle = ({sectionTitle}) => {
-    return <Text style={styles.title}>{title}</Text>
+const SectionTitle = ({sectionTitle}) => {
+    return <Text style={styles.title}>{sectionTitle}</Text>
 }
 
-export const Skeleton = (props) => {
+const Skeleton = (props) => {
 
     // Get general page elements 
-    const navbar =  props.navbar || (<></>);
+    const navbar =  props.navbar;
     const screenStack =  props.screenStack || [];
 
     // structure general page layout
     return (
         <SafeAreaView style={styles.container}>
-            {navbar}
+            <View style={styles.navContainer}>
+                {navbar}
+            </View>
             <SectionList
             sections={screenStack}
             keyExtractor={(item, index) => index}
             renderItem={({ item }) => item}
-            renderSectionHeader={({ section: { title } }) => <sectionTitle sectionTitle = {title}/>}
+            renderSectionHeader={({ section: { title } }) => <SectionTitle sectionTitle = {title}/>}
             />
         </SafeAreaView>
     );

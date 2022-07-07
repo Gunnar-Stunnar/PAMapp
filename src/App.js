@@ -14,7 +14,7 @@ import appContext from './logic/services/AppContext';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 const App: () => Node = () => {
@@ -24,8 +24,13 @@ const App: () => Node = () => {
 
     return (
         // <appContext.getGlobalContext.Provider>
+        <SafeAreaProvider>
             <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator
+                screenOptions={{
+                    headerShown: false
+                  }}
+            >
                 {
                 
                     // Build pages of app using pages/nav.js page schematic
@@ -44,7 +49,7 @@ const App: () => Node = () => {
                 }
             </Stack.Navigator>
             </NavigationContainer>
-        // </appContext.getGlobalContext.Provider>
+        </SafeAreaProvider>
       );
  
 };

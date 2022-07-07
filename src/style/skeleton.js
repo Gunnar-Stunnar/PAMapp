@@ -5,13 +5,15 @@ export default StyleSheet.create({
     
     container: {
       flex: 1,
-      paddingTop: 50,
-      marginHorizontal: 16
+      paddingTop: 5,
+      marginHorizontal: 0
     },
-
-    statusbar:{},
-
+    navContainer: {
+        marginHorizontal: 20
+    },
     title: {
-      fontSize: 24
+        marginVertical: 10,
+        marginHorizontal: 15,
+        fontSize: 24
     }
   });
