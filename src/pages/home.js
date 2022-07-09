@@ -56,9 +56,9 @@ const devices = {
     
 };
 
-const Home: () => Node = () => {
+const Home = ({ navigation }) => {
 
-    const navBar = <Navbar isHome={true} pageTitle={""}></Navbar>;
+    const navBar = <Navbar isHome={true} pageTitle={""} navigation={navigation}></Navbar>;
     const screenStack = [
        {
             title: "Recent Treks",
