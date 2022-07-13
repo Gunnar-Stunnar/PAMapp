@@ -12,8 +12,12 @@ export default StyleSheet.create({
         marginHorizontal: 20
     },
     title: {
+        fontSize: 24,
+        flexGrow:1
+    },
+    titleContainer: {
         marginVertical: 10,
         marginHorizontal: 15,
-        fontSize: 24
+        flexDirection:"row"
     }
   });

@@ -1,11 +1,12 @@
 import React from 'react';
 import type {Node} from 'react';
-import { View, Text} from 'react-native';
+import { View, Text, TouchableOpacity} from 'react-native';
 
 import Skeleton from './components/baseScreen';
 import Navbar from './components/navBar';
 import RecentTreks from './components/recentTrek';
 import DeviceView from './components/deviceView';
+import { pages } from './nav';
 
 
 const devices = {
@@ -58,10 +59,19 @@ const devices = {
 
 const Home = ({ navigation }) => {
 
+    const viewHistory = (
+        <TouchableOpacity onPress={()=>{navigation.navigate(pages.HISTORY, {})}}>
+            <Text style={{color: '#89B1FF', fontSize:24}}>
+            View >
+            </Text>
+        </TouchableOpacity>
+    );
+
     const navBar = <Navbar isHome={true} pageTitle={""} navigation={navigation}></Navbar>;
     const screenStack = [
        {
             title: "Recent Treks",
+            action: viewHistory,
             data:[<RecentTreks/>]
         },
         {

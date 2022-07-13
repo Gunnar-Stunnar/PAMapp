@@ -1,0 +1,20 @@
+{
+    "body": [
+        {
+            "type": "confirmation",
+            "content": {
+                "id": "ID",
+                "newValue": "new value"
+            }
+        },
+        {
+            "type": "confirmation",
+            "content": {
+                "id": "ID",
+                "newValue": "new value"
+            }
+        }
+    ],
+    "status": 200,
+    "error": ""
+}

@@ -3,11 +3,17 @@ import { SectionList, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styles from '../../style/skeleton';
 
-const SectionTitle = ({sectionTitle}) => {
+const SectionTitle = ({sectionTitle, action}) => {
+    
+    action = action || (<></>)
+    
     return (
-        <Text style={styles.title}>
-            {sectionTitle}
-        </Text>
+        <View style={styles.titleContainer}>
+            <Text style={styles.title}>
+                {sectionTitle}
+            </Text>
+            {action}
+        </View>
     )
 }
 
@@ -28,7 +34,7 @@ const Skeleton = (props) => {
             stickySectionHeadersEnabled={false}
             keyExtractor={(item, index) => index}
             renderItem={({ item }) => item}
-            renderSectionHeader={({ section: { title } }) => <SectionTitle sectionTitle = {title}/>}
+            renderSectionHeader={({ section: { title, action } }) => <SectionTitle sectionTitle = {title} action={action}/>}
             />
         </SafeAreaView>
     );
