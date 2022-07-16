@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import React, { createContext } from 'react';
 import { BluetoothModule } from './BluetoothModule'; 
 import { StorageModule } from './StorageModule'; 
 
@@ -11,11 +11,13 @@ function initializeGlobalContext(){
     
     // global services object
     const contextualVariable = {
-        'bluetooth':new BluetoothModule(),
+        'Bluetooth':new BluetoothModule(),
         'Storage':new StorageModule()
     }
     
     globalContext = createContext(contextualVariable);
+
+    return contextualVariable;
 }
 
 // get the global context
@@ -23,8 +25,8 @@ const getGlobalContext = () => globalContext;
 
 
 // export public fields
-export default {
-    'initializeGlobalContext' : initializeGlobalContext,
-    'getGlobalContext' : getGlobalContext
+export {
+    initializeGlobalContext,
+    getGlobalContext
 }
 

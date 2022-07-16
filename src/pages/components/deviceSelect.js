@@ -13,7 +13,7 @@ const DeviceSelectButton = ({onTap, state, size}) =>{
                     borderRadius:size
                 }
             }>
-                <FontAwesomeIcon icon={state? faAdd:faTimes} size={size}/>
+                <FontAwesomeIcon icon={state? faTimes:faAdd} size={size}/>
             </View>
         </TouchableOpacity>
     )

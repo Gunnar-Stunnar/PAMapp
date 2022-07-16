@@ -15,7 +15,7 @@ type PacketType {
     
     // Type & Index
     packetNum: Number;
-    species: SpeciesType;   
+    species: SpeciesType;    
     dateTime: Date; 
     location: LocationType;
 
