@@ -10,8 +10,10 @@ const TrekHistory = ({Treks}) => {
                 stickySectionHeadersEnabled={false}
                 keyExtractor={(item, index) => index}
                 renderItem={({ item }) => item}
-                renderSectionHeader={({ section: { title, action } }) => <SectionTitle sectionTitle = {title} action={action}/>}
+                renderSectionHeader={({ section: { title, action } }) => <></>}
                 />
         </View>
     )
 }
+
+export default TrekHistory;

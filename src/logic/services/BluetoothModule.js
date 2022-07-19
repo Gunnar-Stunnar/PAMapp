@@ -42,7 +42,7 @@ export class BluetoothModule {
         return BleManager.disconnect(peripheral.id);
     }
     async listenForDevice(seconds) {
-        return BleManager.scan([UART_SERVICE_UUID], seconds, false); 
+        return BleManager.scan([], seconds, true); 
     }
     async connectDevice(peripheral){
         return BleManager.connect(peripheral.id);

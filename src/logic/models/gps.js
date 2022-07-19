@@ -6,4 +6,13 @@ type LocationType = {
     acc: Number;
 }
 
+
+/*
+    {
+        longitude: 1.5;
+        latitude: 2.1;
+        acc: 0.08; 
+    }
+*/
+
 export default LocationType;

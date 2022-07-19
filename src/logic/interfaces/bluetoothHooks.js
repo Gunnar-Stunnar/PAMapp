@@ -20,10 +20,10 @@ export function useScanning() {
     });}
 
     const handleDiscoverPeripheral = (peripheral) => {
-        console.log(peripheral.id);
+        
        
         if (!peripheral.name) {
-            peripheral.name = 'NO NAME';
+            return;
         }
 
         peripherals.set(peripheral.id, peripheral);

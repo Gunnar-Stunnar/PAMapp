@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {  } from "@fortawesome/free-solid-svg-icons";
-import { faBattery0, faBattery, faBattery2, faBattery3, faBattery4, faBattery5 } from "@fortawesome/free-solid-svg-icons";
+import { faBattery0, faBattery2, faBattery3, faBattery4, faBattery5, faBattery } from "@fortawesome/free-solid-svg-icons";
 
 
 const battery_icons = [faBattery0, faBattery, faBattery2, faBattery3, faBattery4, faBattery5];

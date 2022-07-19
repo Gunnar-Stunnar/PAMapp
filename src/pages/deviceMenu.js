@@ -7,24 +7,30 @@ import Skeleton from './components/baseScreen';
 import Navbar from './components/navBar';
 
 import type {Device} from '../logic/models/device';
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 
-
-export interface DeviceMenuProps {
-    device: Device;
+interface DeviceMenuProps {
+    route : RouteProp<{ params: { deviceRef: Device } }, 'params'>;
+    navigation: NavigationProp<ParamListBase>;
   }
 
-const DeviceMenu = ({device}:DeviceMenuProps) => {
+const DeviceMenu = ({route, navigation} : DeviceMenuProps) => {
 
-
+    const {deviceRef} = route.params;
 
     const navbar = (
-        <Navbar isHome={false} pageTitle={device.ID} navigation={navigation}/>
+        <Navbar isHome={false} pageTitle={deviceRef.ID} navigation={navigation}/>
     )
     const screenStack = [
         {
              title: "Graph",
-             data:[<RecentTreks/>]
+             data:[]
          },
+         {
+            title: "History",
+            data:[]
+        },
      ];
 
     return (

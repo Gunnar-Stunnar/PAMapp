@@ -1,19 +1,48 @@
 import React from "react";
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import BatteryIcon from './battery';
 
+import type { Device } from '../../logic/models/device'
+import type { SpeciesObj } from '../../logic/models/speciesTypes'
+import { faObjectGroup } from "@fortawesome/free-solid-svg-icons";
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
 
-const SensorCell = ({sensor, style2}) => {
+
+import {pages} from '../nav';
+
+interface SensorCellProps {
+    sensor: SpeciesObj;
+    style2: StyleSheet;
+  }
+
+interface SensorRowProps {
+    sensor1: SpeciesObj;
+    sensor2: SpeciesObj;
+  }
+
+interface SensorTableProps {
+    sensors: SpeciesObj[];
+}
+
+interface DeviceMenuProps {
+    device: Device;
+    navigation: NavigationProp<ParamListBase>;
+  }
+
+const SensorCell = ({sensor, style2} : SensorCellProps) => {
     
+    const last_packet = sensor.packets[sensor.packets.length-1];
+
+
     return (
         <View style={StyleSheet.compose(style.sensorCell, style2)}>
-            <Text style={style.sensorType}>{sensor.type}</Text>
-            <Text style={style.sensorReading}>{sensor.reading} {sensor.unit}</Text>
+            <Text style={style.sensorType}>{sensor.species.type}</Text>
+            <Text style={style.sensorReading}>{last_packet.value} {sensor.species.content.units}</Text>
         </View>
     );
 }
 
-const RowView = ({sensor1, sensor2}) => {
+const RowView = ({sensor1, sensor2} : SensorRowProps) => {
     return (
             <View style={style.sensorRowContainer}>
                 <SensorCell sensor={sensor1} style2={style.sensorCellContainerLeft}/>
@@ -22,7 +51,7 @@ const RowView = ({sensor1, sensor2}) => {
             );
 }
 
-const SensorTable = ({sensors}) => {
+const SensorTable = ({sensors} : SensorTableProps) => {
      // rendering
      const sensorTable = [];
     
@@ -69,32 +98,38 @@ const QuailtyView = ({isGood}) => {
     );
 }
 
-const DeviceView = ({devices}) => {
+const DeviceView = ({device, navigation} : DeviceMenuProps) => {
 
-    const deviceName = devices.name;
-    const sensors = devices.sensors; 
-    const deviceBattery = devices.battery;
+    
+
+    const deviceName = device.deviceType + " " + device.ID;
+    const sensors = device.Species; 
+    const deviceBattery = device.batteryLevel;
     
    
-
     return (
-        <View style={style.container}>
-            
-            {/* Device View Title */}
-            <View style={style.titleContainer}>
-                <Text style={style.title}>
-                    {deviceName}
-                </Text>
-                <BatteryIcon level = {deviceBattery}/>
+        <TouchableOpacity onPress={()=>{
+            navigation.navigate(pages.DEVICE_MENU, {
+                deviceRef: device
+            })
+        }}>
+            <View style={style.container}>
+                
+                {/* Device View Title */}
+                <View style={style.titleContainer}>
+                    <Text style={style.title}>
+                        {deviceName}
+                    </Text>
+                    <BatteryIcon level = {deviceBattery}/>
+                </View>
+                
+                {/* Sensor Table */}
+                <SensorTable sensors={Object.values(sensors)}/> 
+                <QuailtyView isGood={true}/>
             </View>
-            
-            {/* Sensor Table */}
-            <SensorTable sensors={sensors}/> 
-            <QuailtyView isGood={true}/>
-        </View>
+        </TouchableOpacity>
     );
 }
-
 
 const style = StyleSheet.create({
     container:{

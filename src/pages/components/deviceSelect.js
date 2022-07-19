@@ -9,7 +9,7 @@ const DeviceSelectButton = ({onTap, state, size}) =>{
         <TouchableOpacity onTap={onTap}>
             <View style={
                 {
-                    backgroundColor: state? "#89FFAA":"#FF8989",
+                    backgroundColor: state? "#FF8989":"#89FFAA",
                     borderRadius:size
                 }
             }>
@@ -61,7 +61,7 @@ const style = StyleSheet.create({
         flexGrow:1,
     },
     title:{
-        textAlign:"center",
+        textAlign:"left",
         fontWeight:"600",
         fontSize:30,
         color:"#7F7F7F"
