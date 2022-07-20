@@ -12,4 +12,4 @@ type Device = {
     
 }
 
-export {Device};
+export { Device };

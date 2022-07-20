@@ -6,6 +6,8 @@ import Skeleton from './components/baseScreen';
 import Navbar from './components/navBar';
 import DeviceSelect from './components/deviceSelect';
 
+import TrekHistory from './components/trekHistory';
+
 const History = ({navigation}) => {
 
 
@@ -15,24 +17,14 @@ const History = ({navigation}) => {
 
     const sections = [
         {
-            title:"Paired",
-            data:[
-                {
-                title:"PAM 1021",
-                selected:true
-                },
-                {
-                    title:"PAM 1032",
-                    selected:true
-                }
-        ]
+            name: "Trip around lake.",
+            date: new Date(),
+            device: {}
         },
         {
-            title:"Pariable",
-            data:[{
-                title:"PAM 1042",
-                selected:false
-            }]
+            name: "Trip around lake 2.",
+            date: new Date(),
+            device: {}
         }
     ]
 
@@ -42,7 +34,7 @@ const History = ({navigation}) => {
         screenStack={[
             {
                 title:"",
-                data:[]
+                data:[<TrekHistory Treks={sections}/>]
             }
         ]}
         />);
