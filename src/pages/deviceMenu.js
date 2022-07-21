@@ -11,6 +11,7 @@ import {NavigationProp, ParamListBase} from '@react-navigation/native';
 import { RouteProp } from '@react-navigation/native';
 
 import  TrekHistory from './components/trekHistory';
+import Graph from './components/graphing/Graph';
 
 interface DeviceMenuProps {
     route : RouteProp<{ params: { deviceRef: Device } }, 'params'>;
@@ -41,7 +42,9 @@ const DeviceMenu = ({route, navigation} : DeviceMenuProps) => {
     const screenStack = [
         {
              title: "",
-             data:[]
+             data:[
+             <Graph/>
+            ]
          },
          {
             title: "Treks",
