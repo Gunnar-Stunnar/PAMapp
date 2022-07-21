@@ -15,7 +15,7 @@ export function useScanning() {
 
     
     // functions to manage state changes
-    const reload = () => {GContext.Bluetooth.listenForDevice(3).then(()=>{
+    const reload = () => {GContext.Bluetooth.listenForDevice(3).then((results)=>{
         setIsScanning(true);
     });}
 
@@ -52,4 +52,23 @@ export function useScanning() {
       return [devices, isScanning, reload];
 }
 
+export function getDevices() {
+    const [connectedDevices, setConnectedDevices] = useState([]);
+
+    const GContext = useContext(getGlobalContext());
+
+    GContext.Bluetooth.getDevices().then((peripheralsArray) => {
+        setConnectedDevices(peripheralsArray)
+    })
+
+    return connectedDevices;
+}
+
+export function connect(peripheral) {
+    const GContext = useContext(getGlobalContext())
+    console.log(peripheral)
+    GContext.Bluetooth.connect(peripheral).then(() => {
+        console.log("connected");
+    })
+}
 

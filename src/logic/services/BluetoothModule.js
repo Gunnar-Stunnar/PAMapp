@@ -1,6 +1,7 @@
 import React from 'react';
-import {NativeModules, NativeEventEmitter} from 'react-native';
+import {NativeModules, NativeEventEmitter, Platform, PermissionsAndroid} from 'react-native';
 import BleManager from 'react-native-ble-manager';
+// import { stringToBytes } from "convert-string";
 
 
 // Constant for communicating to devices
@@ -33,29 +34,55 @@ export class BluetoothModule {
 
         //start Bluetooth
         BleManager.start({showAlert: false});
+        if (Platform.OS === 'android' && Platform.Version >= 23) {
+            PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
+                if (result) {
+                  console.log("Permission is OK");
+                } else {
+                  PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
+                    if (result) {
+                      console.log("User accept");
+                    } else {
+                      console.log("User refuse");
+                    }
+                  });
+                }
+            });
+        }
     }
     
-    async getDevice(){
+    async getDevices(){
         return BleManager.getConnectedPeripherals([]);
     }
     async disconnectDevice(peripheral){
-        return BleManager.disconnect(peripheral.id);
+        return BleManager.disconnect(peripheral);
     }
     async listenForDevice(seconds) {
-        return BleManager.scan([], seconds, true); 
+        return BleManager.scan([UART_SERVICE_UUID], seconds, true);
     }
     async connectDevice(peripheral){
-        return BleManager.connect(peripheral.id);
+        return BleManager.connect(peripheral).then(() => {
+            console.log("Connected");
+        });
     }
 
     // interacting per device
     async writeToPam(peripheral, data){
-        return BleManager.write(
-            peripheral.id,
-            UART_SERVICE_UUID,
-            UART_RX_CHAR_UUID,
-            data
-          )
+        return BleManager.retrieveServices(peripheral).then((peripheralInfo) => {
+            // console.log(data)
+            // const dataBytes = stringToBytes(data)
+            BleManager.write(
+                peripheral,
+                UART_SERVICE_UUID,
+                UART_RX_CHAR_UUID,
+                // dataBytes
+                data
+              ).then(() => {
+                BleManager.read(peripheral, UART_SERVICE_UUID, UART_RX_CHAR_UUID).then(() => {
+                    
+                })
+              })
+        });
     }
 }
 
