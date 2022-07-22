@@ -8,6 +8,8 @@ let globalContext = null;
 
 // intialize the global context
 function initializeGlobalContext(){
+
+    console.log("Initalizing global context")
     
     // global services object
     const contextualVariable = {

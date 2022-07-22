@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type {Node} from 'react';
-import { View } from 'react-native';
+import { View, Button } from 'react-native';
 
 import Skeleton from './components/baseScreen';
 import Navbar from './components/navBar';
@@ -12,6 +12,10 @@ const SelectDevices = ({navigation}) => {
 
     const [discoveredDevices, isScanning, reload] = useScanning()
     const connectedDevices = getDevices()
+
+    // function scan() {
+    //     [discoveredDevices, isScanning, reload] = useScanning()
+    // }
 
     const navbar = (
         <Navbar isHome={false} pageTitle={"Select Device"} navigation={navigation}/>
@@ -44,6 +48,10 @@ const SelectDevices = ({navigation}) => {
     return (<Skeleton 
         navbar={navbar}
         screenStack={[
+            // {
+            //     title: "",
+            //     data:[<Button title="Refresh" onPress={()=>scan()}/>]
+            // },
             {
                 title:"",
                 data:[<DeviceSelect device_sections={sections}/>]
