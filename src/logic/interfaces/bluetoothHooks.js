@@ -64,6 +64,59 @@ export function getDevices() {
     return connectedDevices;
 }
 
+export function useDeviceInfo() {
+    const [measurements, setMeasurements] = useState([])
+    const [settings, setSettings] = useState([])
+
+    const GContext = useContext(getGlobalContext());
+
+    const message = "";
+
+    function parseBody(item) {
+        if (item["type"] == "setting") {
+            console.log(item["content"]["description"])
+            if (item["content"]["type"] == "menu") {
+                for (var i = 0; i < item["content"]["items"].length; i++) {
+                    parseBody(item["content"]["items"][i])
+                }
+            }
+            else {
+                console.log("    Current Value: " + item["content"]["currentVal"])
+            }
+        }
+        else if (item["type"] == "measurement") {
+            console.log(item["content"]["name"] + ": " + item["content"]["value"] + " " + item["content"]["units"])
+        }
+        else if (item["type"] == "confirmation") {
+            console.log("Changed " + item["content"]["id"] + " to " + item["content"]["newValue"])
+        }
+    }
+
+    const handleUpdateValueForCharacteristic = (value, peripheral, characteristic, service) => {
+        ({ value, peripheral, characteristic, service }) => {
+            message += bytesToString(value)
+            if (message.substring(message.length - 3, message.length) == "end") {
+                console.log(message.substring(0, message.length - 3))
+                message_json = JSON.parse(message.substring(0, message.length - 3))
+                for (var i = 0; i < message_json["body"].length; i++) {
+                    // console.log(message_json["body"][i])
+                    parseBody(message_json["body"][i])
+                }
+                message = ""
+            }
+        }
+    }
+
+    useEffect(() => {
+        GContext.Bluetooth.bleManagerEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', handleUpdateValueForCharacteristic)
+        return () => {
+            GContext.Bluetooth.bleManagerEmitter.removeListener('BleManagerDidUpdateValueForCharacteristic', handleUpdateValueForCharacteristic)
+        }
+    }, []);
+
+    return [measurements, settings];
+}
+
 export function connect(peripheral) {
     const GContext = useContext(getGlobalContext())
     console.log(peripheral)
