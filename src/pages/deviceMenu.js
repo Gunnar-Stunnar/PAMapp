@@ -43,7 +43,7 @@ const DeviceMenu = ({route, navigation} : DeviceMenuProps) => {
         {
              title: "",
              data:[
-             <Graph/>
+             <Graph graphs={{}}/>
             ]
          },
          {

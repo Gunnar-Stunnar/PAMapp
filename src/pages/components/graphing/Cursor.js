@@ -9,7 +9,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { getYForX, Vector } from "react-native-redash";
 
-import { GraphIndex, graphs, SIZEX } from "./Graph_Models";
+import {SIZEX, internal_graph_padding } from "./utils";
+
+import type { GraphProp } from "../../../logic/models/graphType";
 
 const CURSOR = 50;
 const styles = StyleSheet.create({
@@ -32,19 +34,18 @@ const styles = StyleSheet.create({
 interface CursorProps {
   index: Animated.SharedValue<GraphIndex>;
   translation: Vector<Animated.SharedValue<number>>;
+  graphs: GraphProp;
 }
 
-const Cursor = ({ index, translation }: CursorProps) => {
+const Cursor = ({ index, translation, graphs }: CursorProps) => {
   const isActive = useSharedValue(false);
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: () => {
       isActive.value = true;
     },
     onActive: (event) => {
-        console.log(event.x + " " + SIZEX)
-      translation.x.value = Math.max([Math.min([event.x, SIZEX + 16]), 16]);
-      translation.y.value =
-        getYForX(graphs[index.value].data.path, translation.x.value) || 0;
+      translation.x.value = Math.max(Math.min(event.x, SIZEX - internal_graph_padding), internal_graph_padding);
+      translation.y.value = getYForX(graphs[index.value].data.path, translation.x.value) || 0;
     },
     onEnd: () => {
       isActive.value = false;

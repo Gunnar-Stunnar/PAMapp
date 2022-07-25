@@ -4,7 +4,7 @@ import {Device} from './device';
 
 
 // Data Object to Represent 
-type PacketType {
+type PacketType = {
 
     // Initial Spawn
     // device: Device;
