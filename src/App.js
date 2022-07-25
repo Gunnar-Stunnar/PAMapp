@@ -11,7 +11,7 @@
 import React from 'react';
 import type {Node} from 'react';
 
-import { pages_obj_references } from './pages/nav';
+import { pages_obj_references } from './pages/nav'
 import {initializeGlobalContext, getGlobalContext} from './logic/services/AppContext';
 
 import { NavigationContainer } from '@react-navigation/native';

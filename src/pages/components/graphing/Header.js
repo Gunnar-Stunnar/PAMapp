@@ -6,12 +6,12 @@ import Animated, {
   useDerivedValue,
 } from "react-native-reanimated";
 import { ReText, Vector, round } from "react-native-redash";
-
-import { graphs, SIZEX, SIZEY, GraphIndex } from "./Graph_Models";
+import type { GraphProp } from "../../../logic/models/graphType";
+import { SIZEX, SIZEY } from "./utils";
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
     paddingBottom:16
   },
   values: {
@@ -31,20 +31,33 @@ const styles = StyleSheet.create({
 interface HeaderProps {
   translation: Vector<Animated.SharedValue<number>>;
   index: Animated.SharedValue<GraphIndex>;
+  graphs: GraphProp;
 }
 
-const Header = ({ translation, index }: HeaderProps) => {
+const Header = ({ translation, index, graphs }: HeaderProps) => {
   const data = useDerivedValue(() => graphs[index.value].data);
   const price = useDerivedValue(() => {
     const p = interpolate(
       translation.y.value,
-      [0, SIZEX],
+      [0, SIZEY],
       [data.value.maxPrice, data.value.minPrice]
     );
     return `${round(p, 2).toLocaleString("en-US")} ppk`;
   });
   const percentChange = useDerivedValue(
-    () => `${round(data.value.percentChange, 3)}%`
+    () => {
+        
+        const p = interpolate(
+            translation.x.value,
+            [0, SIZEX],
+            [data.value.maxTime, data.value.minTime]
+          );
+          
+        
+        const time = (new Date(p)).toLocaleTimeString()
+
+        return `${time}`;
+    }//`${round(data.value.percentChange, 3)}%`
   );
   const label = useDerivedValue(() => data.value.label);
   const style = useAnimatedStyle(() => ({
@@ -58,11 +71,10 @@ const Header = ({ translation, index }: HeaderProps) => {
       <View style={styles.values}>
         <View>
           <ReText style={styles.value} text={price} />
-          <Text style={styles.label}>CO2</Text>
+          <ReText style={styles.label} text={label} />
         </View>
         <View>
           <ReText style={style} text={percentChange} />
-          <ReText style={styles.label} text={label} />
         </View>
       </View>
     </View>
