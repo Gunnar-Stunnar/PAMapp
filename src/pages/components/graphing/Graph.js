@@ -85,7 +85,7 @@ const Graph = ({ graphs } : GraphProps) => {
 
   return (
     <View style={styles.container}>
-      <Header translation={translation} index={current} />
+      <Header translation={translation} index={current} graphs={graphs}/>
       <View>
         <Svg width={SIZEX} height={SIZEY}>
             {/* Graph backGround Gradient */}
@@ -106,7 +106,7 @@ const Graph = ({ graphs } : GraphProps) => {
                 />
             
         </Svg>
-        <Cursor translation={translation} index={current} />
+        <Cursor translation={translation} index={current} graphs={graphs}/>
       </View>
       <View style={styles.selection}>
         <View style={StyleSheet.absoluteFill}>
