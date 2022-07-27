@@ -40,13 +40,12 @@ const Header = ({ translation, index, graphs }: HeaderProps) => {
     const p = interpolate(
       translation.y.value,
       [0, SIZEY],
-      [data.value.maxPrice, data.value.minPrice]
+      [data.value.maxPoint, data.value.minPoint]
     );
     return `${round(p, 2).toLocaleString("en-US")} ppk`;
   });
-  const percentChange = useDerivedValue(
+  const timeInterpolate = useDerivedValue(
     () => {
-        
         const p = interpolate(
             translation.x.value,
             [0, SIZEX],
@@ -60,11 +59,7 @@ const Header = ({ translation, index, graphs }: HeaderProps) => {
     }//`${round(data.value.percentChange, 3)}%`
   );
   const label = useDerivedValue(() => data.value.label);
-  const style = useAnimatedStyle(() => ({
-    fontWeight: "500",
-    fontSize: 24,
-    color: data.value.percentChange > 0 ? "red" : "green",
-  }));
+
   return (
     <View style={styles.container}>
       
@@ -74,7 +69,11 @@ const Header = ({ translation, index, graphs }: HeaderProps) => {
           <ReText style={styles.label} text={label} />
         </View>
         <View>
-          <ReText style={style} text={percentChange} />
+          <ReText style={{
+                          fontWeight: "500",
+                          fontSize: 24,
+                          
+                        }} text={timeInterpolate} />
         </View>
       </View>
     </View>
