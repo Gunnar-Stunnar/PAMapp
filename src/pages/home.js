@@ -12,6 +12,8 @@ import type { Device } from '../logic/models/device';
 
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
 
+import { useDeviceInfo } from '../logic/interfaces/bluetoothHooks';
+
 interface HomeProps {
     navigation:NavigationProp<ParamListBase>
 }
@@ -119,6 +121,8 @@ const devices: Device[] = [
 // };
 
 const Home = ({ navigation } : HomeProps) => {
+
+    // const [measurements, settings] = useDeviceInfo()
 
     const viewHistory = (
         <TouchableOpacity onPress={()=>{navigation.navigate(pages.HISTORY, {})}}>

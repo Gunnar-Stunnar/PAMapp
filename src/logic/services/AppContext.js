@@ -8,11 +8,14 @@ let globalContext = null;
 
 // intialize the global context
 function initializeGlobalContext(){
+
+    console.log("Initalizing global context")
     
     // global services object
     const contextualVariable = {
-        'Bluetooth':new BluetoothModule(),
-        'Storage':new StorageModule()
+        'Bluetooth':new BluetoothModule({devicesList: []}),
+        'Storage':new StorageModule(),
+        'MemoryStorage': null
     }
     
     globalContext = createContext(contextualVariable);

@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import {Text, StyleSheet, SectionList, View, TouchableOpacity} from "react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faAdd, faTimes } from "@fortawesome/free-solid-svg-icons";
 
+import { connect } from '../../logic/interfaces/bluetoothHooks';
+import { getGlobalContext } from '../../logic/services/AppContext';
+
 const DeviceSelectButton = ({onTap, state, size}) =>{
     return (
-        <TouchableOpacity onTap={onTap}>
+        <TouchableOpacity onPress={onTap}>
             <View style={
                 {
                     backgroundColor: state? "#FF8989":"#89FFAA",
@@ -26,16 +29,25 @@ const SectionTitle = ({title}) => {
 }
 
 const DeviceRender = ({device}) => {
+    const GContext = useContext(getGlobalContext())
+
+    function onTap() {
+        device.selected 
+        ? GContext.Bluetooth.disconnectDevice(device.id) 
+        : GContext.Bluetooth.connectDevice(device.id).then(() => {
+            GContext.Bluetooth.writeToPam(device.id, '{"command": 100, "body": "none"}')
+        })
+    }
+
     return (
         <View style={style.deviceRenderContainer}>
             <Text style={style.deviceTitle}>{device.title}</Text>
-            <DeviceSelectButton onTap={()=>{}} state={device.selected} size={42}/>
+            <DeviceSelectButton onTap={()=> onTap()} state={device.selected} size={42}/>
         </View>
     )
 }
 
 const DeviceSelect = ({device_sections}) => {
-
     return (
         <View style={style.DeviceSelectContainer}>
             <SectionList
