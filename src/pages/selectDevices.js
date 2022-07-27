@@ -6,12 +6,12 @@ import Skeleton from './components/baseScreen';
 import Navbar from './components/navBar';
 import DeviceSelect from './components/deviceSelect';
 
-import { useScanning, getDevices } from '../logic/interfaces/bluetoothHooks';
+import { useScanning, useConnectedDevices } from '../logic/interfaces/bluetoothHooks';
 
 const SelectDevices = ({navigation}) => {
 
     const [discoveredDevices, isScanning, reload] = useScanning()
-    const connectedDevices = getDevices()
+    const connectedDevices = useConnectedDevices()
 
     // function scan() {
     //     [discoveredDevices, isScanning, reload] = useScanning()

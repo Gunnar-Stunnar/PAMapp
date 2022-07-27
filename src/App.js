@@ -17,7 +17,7 @@ import {initializeGlobalContext, getGlobalContext} from './logic/services/AppCon
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
+import { useDeviceManager } from './logic/interfaces/bluetoothHooks';
 
 import { LogBox } from "react-native";
 
@@ -29,6 +29,9 @@ const App: () => Node = () => {
     // initialize adapters 
     const init_value = initializeGlobalContext();
     const GContext = getGlobalContext();
+
+    const deviceManager = useDeviceManager();
+    init_value.MemoryStorage = deviceManager;
 
     return (
         <GContext.Provider value={init_value}>

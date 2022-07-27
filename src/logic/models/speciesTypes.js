@@ -1,7 +1,7 @@
 import PacketType from "./packetType";
 
 
-type contentType = {
+type ContentType = {
     name: String;
     units: String;
 }
