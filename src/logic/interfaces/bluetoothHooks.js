@@ -104,22 +104,27 @@ export function useDeviceManager() {
         }
         else if (item["type"] == "measurement") {
             let packetNum = 0
-            if (updatedDevice.Species[item["content"]["name"]] == null) {
-                updatedDevice.Species[item["content"]["name"]] = {species: {type: "measurement", content: {name: item["content"]["name"], units: item["content"]["units"]}}, packets: []};
-            }
-            else {
-                packetNum = updatedDevice.Species[item["content"]["name"]].packets.length;
-            }
-            updatedDevice.Species[item["content"]["name"]].packets.push({
-                units: item["content"]["units"], 
-                value: item["content"]["value"], 
-                packetNum: packetNum, 
-                dateTime: Date.now(),
-                location: {
-                    longitude: longitude,
-                    latitude: latitude
+            if (item["content"]["name"] !== "LAT" && item["content"]["name"] !== "LON" && item["content"]["name"] !== "Battery") {
+                if (updatedDevice.Species[item["content"]["name"]] == null) {
+                    updatedDevice.Species[item["content"]["name"]] = {species: {type: "measurement", content: {name: item["content"]["name"], units: item["content"]["units"]}}, packets: []};
                 }
-            });
+                else {
+                    packetNum = updatedDevice.Species[item["content"]["name"]].packets.length;
+                }
+                if (item["content"]["value"] !== "N/A") {
+                    updatedDevice.Species[item["content"]["name"]].packets.push({
+                        units: item["content"]["units"], 
+                        value: Number(item["content"]["value"]), 
+                        packetNum: packetNum, 
+                        dateTime: new Date(),
+                        location: {
+                            longitude: longitude,
+                            latitude: latitude
+                        }
+                    });
+                }
+                console.log(updatedDevice.Species[item["content"]["name"]].packets)
+            }
             // console.log(item["content"]["name"] + ": " + item["content"]["value"] + " " + item["content"]["units"])
         }
         else if (item["type"] == "confirmation") {
