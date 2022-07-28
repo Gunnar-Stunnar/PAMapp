@@ -3,6 +3,7 @@ import { getGlobalContext } from '../services/AppContext';
 import type { Device } from '../models/device.js';
 import type { SpeciesObj, SpeciesType, ContentType } from '../models/speciesTypes.js';
 import type { PacketType } from '../models/packetType.js';
+import type { Setting } from '../models/settingsType.js';
 import { stringToBytes, bytesToString } from "convert-string";
 
 // start scanning for devices.
@@ -87,21 +88,29 @@ export function useDeviceManager() {
 
     const [devices: {[key:String]: [Device, (Device) => void]}, updateDevices] = useReducer(reducer, {});
     
-    const parseBody = (item, updatedDevice, latitude, longitude) => {
-        if (item["type"] == "setting") {
-            console.log(item["content"]["description"])
-            if (item["content"]["type"] == "menu") {
-                for (var i = 0; i < item["content"]["items"].length; i++) {
-                    parseBody(item["content"]["items"][i])
-                }
-            }
-            else {
-                console.log("    Current Value: " + item["content"]["currentVal"])
-            }
-            if (item["content"]["id"] == "deviceId") {
-                updatedDevice.ID = Number(item["content"]["currentVal"])
+    const parseSetting = (item) => {
+        let setting: Setting = {}
+
+        setting = {
+            type: item["type"],
+            description: item["description"],
+            value: item["currentVal"],
+            isDevice: item["isDevice"],
+            id: item["id"],
+            subSettings: {},
+            options: []
+        }
+        
+        if (item["type"] == "menu") {
+            for (var i = 0; i < item["items"].length; i++) {
+                setting["subSettings"][item["items"][i]["id"]] = parseSetting(item["items"][i]);
             }
         }
+        else if (item["type"] == "options") {
+            setting["options"] = item["items"];
+        }
+
+        return setting;
     }
 
     const parseMessage = (message, updatedDevice) => {
@@ -109,35 +118,44 @@ export function useDeviceManager() {
             updatedDevice["ID"] = Number(message["device"]);
         }
 
-        if (message["type"] == "measurements") {
-            updatedDevice["batteryLevel"] = message["battery"];
-            for (var i = 0; i < message["body"].length; i++) {
-                let packetNum = 0
-                let item = message["body"][i]
-                if (updatedDevice.Species[item["name"]] == null) {
-                    // TODO: check if any of the species info needs updating?
-                    updatedDevice.Species[item["name"]] = {species: {name: item["name"], units: item["units"]}, packets: []};
-                }
-                else {
-                    packetNum = updatedDevice.Species[item["name"]].packets.length;
-                }
-                if (item["value"] !== "N/A") {
-                    updatedDevice.Species[item["name"]].packets.push({
-                        units: item["units"],
-                        value: Number(item["value"]),
-                        packetNum: packetNum,
-                        dateTime: new Date(),
-                        location: {
-                            latitude: message["location"]["latitude"],
-                            longitude: message["location"]["longitude"]
-                        }
-                    })
-                }
-                console.log(updatedDevice.Species[item["name"]].packets)
-            }
+        if (message["status"] == 404) {
+            console.log(message["error"])
         }
-        else if (message["type"] == "settings") {
-
+        else {
+            if (message["type"] == "measurements") {
+                updatedDevice["batteryLevel"] = message["battery"];
+                for (var i = 0; i < message["body"].length; i++) {
+                    let packetNum = 0
+                    let item = message["body"][i]
+                    if (updatedDevice.Species[item["name"]] == null) {
+                        // TODO: check if any of the species info needs updating?
+                        updatedDevice.Species[item["name"]] = {species: {name: item["name"], units: item["units"]}, packets: []};
+                    }
+                    else {
+                        packetNum = updatedDevice.Species[item["name"]].packets.length;
+                    }
+                    if (item["value"] !== "N/A") {
+                        updatedDevice.Species[item["name"]].packets.push({
+                            units: item["units"],
+                            value: Number(item["value"]),
+                            packetNum: packetNum,
+                            dateTime: new Date(),
+                            location: {
+                                latitude: message["location"]["latitude"],
+                                longitude: message["location"]["longitude"]
+                            }
+                        })
+                    }
+                    // console.log(updatedDevice.Species[item["name"]].packets)
+                }
+            }
+            else if (message["type"] == "settings") {
+                for (var i = 0; i < message["body"].length; i++) {
+                    let item = message["body"][i];
+                    updatedDevice.settings[item["id"]] = parseSetting(item)
+                    // console.log(updatedDevice.settings[item["id"]])
+                }
+            }
         }
     }
     
@@ -156,7 +174,7 @@ export function useDeviceManager() {
     };
 
     const handleConnectPeripheral = ({peripheral, status}) => {
-        const newDevice: Device = {peripheralID: peripheral, Species: {}, initialized: false};
+        const newDevice: Device = {peripheralID: peripheral, Species: {}, initialized: false, settings: {}};
         updateDevices({type: 'add', payload: {newDevice: newDevice, peripheral: peripheral}});
     };
 

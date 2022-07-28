@@ -1,7 +1,7 @@
 type Setting = {
     type: String,
     description: String,
-    currentVal: String,
+    value: String,
     isDevice: Boolean,
     id: String,
     subSettings: { [key: String] : Setting }, // how to deal with sub settings for UI?

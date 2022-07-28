@@ -10,7 +10,7 @@ type Device = {
     deviceType: "PAM" | "CAM" | "RemotePAM" | "NoDevice";
     connection: ConnectionType;
     Species: { [key: String] : SpeciesObj}; 
-    Settings: { [key: String] : Setting};
+    settings: { [key: String] : Setting};
     initialized: boolean;
 }
 
