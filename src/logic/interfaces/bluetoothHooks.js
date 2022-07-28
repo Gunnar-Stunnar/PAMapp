@@ -105,6 +105,10 @@ export function useDeviceManager() {
     }
 
     const parseMessage = (message, updatedDevice) => {
+        if (updatedDevice["ID"] == null) {
+            updatedDevice["ID"] = Number(message["device"]);
+        }
+
         if (message["type"] == "measurements") {
             updatedDevice["batteryLevel"] = message["battery"];
             for (var i = 0; i < message["body"].length; i++) {
@@ -113,7 +117,6 @@ export function useDeviceManager() {
                 if (updatedDevice.Species[item["name"]] == null) {
                     // TODO: check if any of the species info needs updating?
                     updatedDevice.Species[item["name"]] = {species: {name: item["name"], units: item["units"]}, packets: []};
-                    console.log("test")
                 }
                 else {
                     packetNum = updatedDevice.Species[item["name"]].packets.length;
@@ -133,6 +136,9 @@ export function useDeviceManager() {
                 console.log(updatedDevice.Species[item["name"]].packets)
             }
         }
+        else if (message["type"] == "settings") {
+
+        }
     }
     
     var message = "";
@@ -150,7 +156,7 @@ export function useDeviceManager() {
     };
 
     const handleConnectPeripheral = ({peripheral, status}) => {
-        const newDevice: Device = {peripheralId: peripheral, Species: {}, initialized: false};
+        const newDevice: Device = {peripheralID: peripheral, Species: {}, initialized: false};
         updateDevices({type: 'add', payload: {newDevice: newDevice, peripheral: peripheral}});
     };
 

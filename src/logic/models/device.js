@@ -6,7 +6,7 @@ import {Setting} from '../models/settingsType';
 type Device = {
     ID: Number;
     batteryLevel: Number;
-    peripheralId: String;
+    peripheralID: String;
     deviceType: "PAM" | "CAM" | "RemotePAM" | "NoDevice";
     connection: ConnectionType;
     Species: { [key: String] : SpeciesObj}; 
