@@ -35,7 +35,7 @@ const DeviceRender = ({device}) => {
         device.selected 
         ? GContext.Bluetooth.disconnectDevice(device.id) 
         : GContext.Bluetooth.connectDevice(device.id).then(() => {
-            GContext.Bluetooth.writeToPam(device.id, '{"command": 100, "body": "none"}')
+            // GContext.Bluetooth.writeToPam(device.id, '{"command": 100, "body": "none"}')
         })
     }
 

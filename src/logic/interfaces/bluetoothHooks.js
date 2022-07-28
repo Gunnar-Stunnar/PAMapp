@@ -102,33 +102,36 @@ export function useDeviceManager() {
                 updatedDevice.ID = Number(item["content"]["currentVal"])
             }
         }
-        else if (item["type"] == "measurement") {
-            let packetNum = 0
-            if (item["content"]["name"] !== "LAT" && item["content"]["name"] !== "LON" && item["content"]["name"] !== "Battery") {
-                if (updatedDevice.Species[item["content"]["name"]] == null) {
-                    updatedDevice.Species[item["content"]["name"]] = {species: {type: "measurement", content: {name: item["content"]["name"], units: item["content"]["units"]}}, packets: []};
+    }
+
+    const parseMessage = (message, updatedDevice) => {
+        if (message["type"] == "measurements") {
+            updatedDevice["batteryLevel"] = message["battery"];
+            for (var i = 0; i < message["body"].length; i++) {
+                let packetNum = 0
+                let item = message["body"][i]
+                if (updatedDevice.Species[item["name"]] == null) {
+                    // TODO: check if any of the species info needs updating?
+                    updatedDevice.Species[item["name"]] = {species: {name: item["name"], units: item["units"]}, packets: []};
+                    console.log("test")
                 }
                 else {
-                    packetNum = updatedDevice.Species[item["content"]["name"]].packets.length;
+                    packetNum = updatedDevice.Species[item["name"]].packets.length;
                 }
-                if (item["content"]["value"] !== "N/A") {
-                    updatedDevice.Species[item["content"]["name"]].packets.push({
-                        units: item["content"]["units"], 
-                        value: Number(item["content"]["value"]), 
-                        packetNum: packetNum, 
+                if (item["value"] !== "N/A") {
+                    updatedDevice.Species[item["name"]].packets.push({
+                        units: item["units"],
+                        value: Number(item["value"]),
+                        packetNum: packetNum,
                         dateTime: new Date(),
                         location: {
-                            longitude: longitude,
-                            latitude: latitude
+                            latitude: message["location"]["latitude"],
+                            longitude: message["location"]["longitude"]
                         }
-                    });
+                    })
                 }
-                console.log(updatedDevice.Species[item["content"]["name"]].packets)
+                console.log(updatedDevice.Species[item["name"]].packets)
             }
-            // console.log(item["content"]["name"] + ": " + item["content"]["value"] + " " + item["content"]["units"])
-        }
-        else if (item["type"] == "confirmation") {
-            console.log("Changed " + item["content"]["id"] + " to " + item["content"]["newValue"])
         }
     }
     
@@ -139,24 +142,7 @@ export function useDeviceManager() {
             const updatedDevice: Device = devices[peripheral]
             console.log(message.substring(0, message.length - 3))
             let message_json = JSON.parse(message.substring(0, message.length - 3))
-            let latitude = 0;
-            let longitude = 0;
-            for (var i = 0; i < message_json["body"].length; i++) {
-                if (message_json["body"][i]["type"] == "measurement") {
-                    if (message_json["body"][i]["content"]["name"] == "LAT") {
-                        latitude = message_json["body"][i]["content"]["value"];
-                    }
-                    else if (message_json["body"][i]["content"]["name"] == "LON") {
-                        longitude = message_json["body"][i]["content"]["value"];
-                    }
-                    else if (message_json["body"][i]["content"]["name"] == "Battery") {
-                        updatedDevice["batteryLevel"] = Number(message_json["body"][i]["content"]["value"]);
-                    }
-                }
-            }
-            for (var i = 0; i < message_json["body"].length; i++) {
-                parseBody(message_json["body"][i], updatedDevice, latitude, longitude)
-            }
+            parseMessage(message_json, updatedDevice)
             message = ""
             console.log(updatedDevice)
             updateDevices({type: 'update', payload: {updatedDevice: updatedDevice, peripheral: peripheral}})

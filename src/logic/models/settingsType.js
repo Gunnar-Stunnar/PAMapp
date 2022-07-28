@@ -1,0 +1,9 @@
+type Setting = {
+    type: String,
+    description: String,
+    currentVal: String,
+    isDevice: Boolean,
+    id: String,
+    subSettings: { [key: String] : Setting }, // how to deal with sub settings for UI?
+    options: String[]
+}

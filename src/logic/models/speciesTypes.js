@@ -1,14 +1,8 @@
 import PacketType from "./packetType";
 
-
-type ContentType = {
+type SpeciesType = {
     name: String;
     units: String;
-}
-
-type SpeciesType =  {
-    type: String;
-    content: contentType; //TODO: TBD - could be various objects
 }
 
 type SpeciesObj = {
