@@ -61,11 +61,9 @@ export class BluetoothModule {
         const BleManagerModule = NativeModules.BleManager;
         const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
         this.bleManagerEmitter = bleManagerEmitter;
-        this.bleManager = BleManager;
         this.message = ""
 
         //start Bluetooth
-        BleManager.start({showAlert: false});
         if (Platform.OS === 'android' && Platform.Version >= 23) {
             PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
                 if (result) {
@@ -81,22 +79,44 @@ export class BluetoothModule {
                 }
             });
         }
+        BleManager.start({showAlert: false});
+        BleManager.checkState();
     }
     
     async getDevices(){
         return BleManager.getConnectedPeripherals([]);
     }
     async disconnectDevice(peripheral){
-        BleManager.disconnect(peripheral);
+        return BleManager.disconnect(peripheral);
     }
+
     async listenForDevice(seconds) {
-        return BleManager.scan([UART_SERVICE_UUID], seconds, true);
+        return BleManager.scan([UART_SERVICE_UUID], seconds, false);
     }
+
+    
+
     async connectDevice(peripheral){
-        await BleManager.connect(peripheral);
-        await BleManager.retrieveServices(peripheral);
-        await BleManager.requestMTU(peripheral, 512);
-        BleManager.startNotification(peripheral, UART_SERVICE_UUID, UART_TX_CHAR_UUID);
+
+        const awaitTimeout = delay => new Promise(resolve => setTimeout(resolve, delay));
+        console.log(peripheral);
+
+        await BleManager.connect(peripheral.id).catch((e)=>console.log(e));
+        console.log("Connected");
+
+        await awaitTimeout(900);
+
+        const peripheralData = await BleManager.retrieveServices(peripheral.id, [UART_SERVICE_UUID]).catch((e) => console.log(e));
+        console.log(peripheralData.name);
+
+        console.log("0")
+        if (Platform.OS === 'android'){
+            await BleManager.requestMTU(peripheral.id, 512).catch((e) => console.log(e));
+        }
+        console.log("1")
+        await BleManager.startNotification(peripheral.id, UART_SERVICE_UUID, UART_TX_CHAR_UUID).catch((e) => console.log(e));
+        console.log("2")
+           
     }
 
     // interacting per device

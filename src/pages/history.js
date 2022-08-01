@@ -4,7 +4,6 @@ import { View } from 'react-native';
 
 import Skeleton from './components/baseScreen';
 import Navbar from './components/navBar';
-import DeviceSelect from './components/deviceSelect';
 
 import TrekHistory from './components/trekHistory';
 

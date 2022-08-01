@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useReducer } from 'react';
+import { useState, useEffect, useContext, useReducer, useMemo } from 'react';
 import { getGlobalContext } from '../services/AppContext';
 import type { Device } from '../models/device.js';
 import type { SpeciesObj, SpeciesType, ContentType } from '../models/speciesTypes.js';
@@ -52,40 +52,46 @@ export function useScanning() {
         };
       }, []);
 
+
+      // remove devices already connected
+
       return [devices, isScanning, reload];
 }
 
 export function useConnectedDevices() {
-    const [connectedDevices, setConnectedDevices] = useState([]);
+    // const [connectedDevices, setConnectedDevices] = useState([]);
 
     const GContext = useContext(getGlobalContext());
 
-    GContext.Bluetooth.getDevices().then((peripheralsArray) => {
-        setConnectedDevices(peripheralsArray)
-    })
+    const deviceManger = GContext['MemoryStorage'];
 
-    return connectedDevices;
+    return deviceManger;
 }
 
 export function useDeviceManager() {
+
     const GContext = useContext(getGlobalContext())
     // devices stored in map, mapping id (bluetooth peripheral) to device state management
     function reducer(state, action) {
-        switch (action.type) {
-            case 'add':
-                state[action.payload.peripheral] = (action.payload.newDevice)
-                return state;
+            switch (action.type) {
+                case 'add':
+                    state[action.payload.peripheral] = (action.payload.newDevice)
+                    return state;
 
-            case 'update':
-                state[action.payload.peripheral] = action.payload.updatedDevice
-                return state;
-        
-            default:
-                throw new Error();
+                case 'update':
+                    state[action.payload.peripheral] = {...action.payload.updatedDevice, ...state[action.payload.peripheral]}
+                    return state;
+            
+                case 'remove':
+                    state[action.payload.peripheral] = null;
+                    return state;
+
+                default:
+                    throw new Error();
+            }
         }
-    }
 
-    const [devices: {[key:String]: [Device, (Device) => void]}, updateDevices] = useReducer(reducer, {});
+    const [devices: {[key : String] : Device}, updateDevices] = useReducer(reducer, {});
     
     const parseBody = (item, updatedDevice, latitude, longitude) => {
         if (item["type"] == "setting") {
@@ -99,7 +105,7 @@ export function useDeviceManager() {
                 console.log("    Current Value: " + item["content"]["currentVal"])
             }
             if (item["content"]["id"] == "deviceId") {
-                updatedDevice.ID = Number(item["content"]["currentVal"])
+                updatedDevice.Name = Number(item["content"]["currentVal"])
             }
         }
         else if (item["type"] == "measurement") {
@@ -163,27 +169,49 @@ export function useDeviceManager() {
         }
     };
 
-    const handleConnectPeripheral = ({peripheral, status}) => {
-        const newDevice: Device = {peripheralId: peripheral, Species: {}, initialized: false};
-        updateDevices({type: 'add', payload: {newDevice: newDevice, peripheral: peripheral}});
+    const connectPrepherial = async (peripheral, intialMessage) => {
+        
+        // Connect Prepherial 
+        await GContext.Bluetooth.connectDevice(peripheral);
+        await GContext.Bluetooth.writeToPam(peripheral.id, intialMessage);
+
+        // update state with infromation 
+        const newDevice: Device = {peripheralId: peripheral.id, Name: peripheral.name, Species: {}, initialized: false, deviceType:"PAM"};
+        updateDevices({type: 'add', payload: {newDevice: newDevice, peripheral: peripheral.id}});
+
     };
+
+    const disconnectDevice = async (peripheralID : String) => {
+
+        //disconnect devices
+        await GContext.Bluetooth.disconnectDevice(peripheralID);
+        
+        //update statemangment
+        updateDevices({type: 'remove', payload: {peripheral: peripheralID}});        
+    } 
+    
 
     // useEffect for initiating listeners to listen to devices
     useEffect(() => {
 
         // add listener and begin Scanning
-        GContext.Bluetooth.bleManagerEmitter.addListener('BleManagerConnectPeripheral',  handleConnectPeripheral);
+        // GContext.Bluetooth.bleManagerEmitter.addListener('BleManagerConnectPeripheral',  handleConnectPeripheral);
         GContext.Bluetooth.bleManagerEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',  handleUpdateValueForCharacteristic);
         
         return () => {
             // remove listeners
-            GContext.Bluetooth.bleManagerEmitter.removeListener('BleManagerConnectPeripheral',  handleConnectPeripheral);
+            // GContext.Bluetooth.bleManagerEmitter.removeListener('BleManagerConnectPeripheral',  handleConnectPeripheral);
             GContext.Bluetooth.bleManagerEmitter.removeListener('BleManagerDidUpdateValueForCharacteristic', handleUpdateValueForCharacteristic);
         };
     }, []);
 
+    const devices_mem =  useMemo(() => { return Object.values(devices).map((e) => {
+        return e;
+    }) || []}, [devices]);
+
     // reduce states out of devices map and return
-    return Object.values(devices).map((e) => {
-        return e[0];
-    });
+    return { 'devices': devices_mem,
+             'connectPrepheral':    connectPrepherial,
+             'disconnectPrepheral': disconnectDevice
+};
 }

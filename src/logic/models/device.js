@@ -5,7 +5,10 @@ import {SpeciesObj, SpeciesType} from './speciesTypes';
 
 // Device type, represent physical device as object
 type Device = {
-    ID: Number;
+    Name : String;
+    ID : Number;
+    peripheralId:String;
+    isConnected:Boolean;
     batteryLevel: Number;
     peripheralId: String;
     deviceType: "PAM" | "CAM" | "RemotePAM" | "NoDevice";
