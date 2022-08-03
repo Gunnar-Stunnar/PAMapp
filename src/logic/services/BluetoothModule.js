@@ -24,36 +24,6 @@ const DEVICE_ID = "E8:9F:6D:B3:28:06";
 
 // }
 
-// const parseBody = (item, deviceList, index) => {
-//     if (item["type"] == "setting") {
-//         console.log(item["content"]["description"])
-//         if (item["content"]["type"] == "menu") {
-//             for (var i = 0; i < item["content"]["items"].length; i++) {
-//                 parseBody(item["content"]["items"][i])
-//             }
-//         }
-//         else {
-//             console.log("    Current Value: " + item["content"]["currentVal"])
-//         }
-//     }
-//     else if (item["type"] == "measurement") {
-//         var there = false;
-//         if (deviceList[index].Species.item["content"]["name"] != null) {
-//             var lastNum = deviceList[index].item["content"]["name"].packets[deviceList[index].item["content"]["name"].packetslength-1].packetNum
-//             deviceList[index].Species.item["content"]["name"].packets.push({
-//                 units: item["content"]["units"],
-//                 value: item["content"]["value"],
-//                 packetNum: lastNum + 1,
-//                 dateTime: Date().now()
-//             })
-//         }
-//         console.log(item["content"]["name"] + ": " + item["content"]["value"] + " " + item["content"]["units"])
-//     }
-//     else if (item["type"] == "confirmation") {
-//         console.log("Changed " + item["content"]["id"] + " to " + item["content"]["newValue"])
-//     }
-// }
-
 // module pass down widget tree for app use
 export class BluetoothModule {
     
