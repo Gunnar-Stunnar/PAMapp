@@ -30,7 +30,6 @@ const init_value = initializeGlobalContext();
 const App: () => Node = () => {
 
     // initialize adapters 
-    
     const GContext = getGlobalContext();
 
     const deviceManager = useDeviceManager();
