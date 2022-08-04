@@ -140,6 +140,8 @@ export function useDeviceManager() {
     
     var message = "";
     const handleUpdateValueForCharacteristic = ({ value, peripheral, characteristic, service }) => {
+
+
         message += bytesToString(value)
         if (message.substring(message.length - 3, message.length) == "end") {
             const updatedDevice: Device = devices[peripheral]
@@ -205,12 +207,11 @@ export function useDeviceManager() {
         };
     }, []);
 
-    const devices_mem =  useMemo(() => { return Object.values(devices).map((e) => {
-        return e;
-    }) || []}, [devices]);
 
     // reduce states out of devices map and return
-    return { 'devices': devices_mem,
+    return { 'devices': Object.values(devices).map((e) => {
+                return e;
+            }) || [],
              'connectPrepheral':    connectPrepherial,
              'disconnectPrepheral': disconnectDevice
 };

@@ -13,10 +13,24 @@ import type { Device } from '../logic/models/device';
 const SelectDevices = ({navigation}) => {
 
     const [discoveredDevices, isScanning, reload] = useScanning();
-    
-    const {connectPrepheral, devices, disconnectPrepheral} = useConnectedDevices();
+    const {devices, connectPrepheral, disconnectPrepheral} = useConnectedDevices();
 
-     
+    
+    const [connectedDevices, updateConnectedDevices] = useState([]);
+    const [notConnectedDevices, updateNotConnectedDevices] = useState([]);
+
+    const [force, updateState] = React.useState();
+    const forceUpdate = React.useCallback(() => updateState({}), []);
+
+    useEffect(() => {
+        const filtedDevices = devices.filter(e => e?1:0);
+
+        console.log(filtedDevices);
+
+        updateConnectedDevices(filtedDevices)
+        updateNotConnectedDevices(discoveredDevices.filter((e) => !filtedDevices.some((connected) => (e.id) == connected.peripheralId)))
+
+    }, [devices, discoveredDevices, force]);
 
 
     // function scan() {
@@ -27,17 +41,18 @@ const SelectDevices = ({navigation}) => {
         <Navbar isHome={false} pageTitle={"Select Device"} navigation={navigation}/>
     )
 
-    const notConnectedDevices = discoveredDevices.filter((e) => !devices.some((connected) => (e.id) == connected.peripheralId));;
+
     const sections = [
         {
             title:"Paired",
-            data: devices.map((e : Device) => {
+            data: connectedDevices.map((e : Device) => {
                 return {
                     title: e.Name,
                     id: e.peripheralId,
                     selected: true,
                     deviceAction: async () => {
                         await disconnectPrepheral(e.peripheralId);
+                        forceUpdate();
                     }
                 }
             })
@@ -49,7 +64,7 @@ const SelectDevices = ({navigation}) => {
                     title : e.name,
                     id: e.id,
                     selected: false,
-                    deviceAction: async () => await connectPrepheral(e, '{"command": 100, "body": "none"}')
+                    deviceAction: async () => await connectPrepheral(e, '{"command": 100, "body": "none"}').catch((e)=> console.log("---"+e))
                 }
             })
         }

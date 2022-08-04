@@ -9,6 +9,7 @@
  import 'react-native-gesture-handler';
 
 import React from 'react';
+import {useEffect} from "react";
 import type {Node} from 'react';
 
 import { pages_obj_references } from './pages/nav'
@@ -24,10 +25,12 @@ import { LogBox } from "react-native";
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 
 const Stack = createNativeStackNavigator();
+const init_value = initializeGlobalContext();
+
 const App: () => Node = () => {
 
     // initialize adapters 
-    const init_value = initializeGlobalContext();
+    
     const GContext = getGlobalContext();
 
     const deviceManager = useDeviceManager();

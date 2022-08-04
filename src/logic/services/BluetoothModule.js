@@ -113,6 +113,7 @@ export class BluetoothModule {
         if (Platform.OS === 'android'){
             await BleManager.requestMTU(peripheral.id, 512).catch((e) => console.log(e));
         }
+        
         console.log("1")
         await BleManager.startNotification(peripheral.id, UART_SERVICE_UUID, UART_TX_CHAR_UUID).catch((e) => console.log(e));
         console.log("2")
@@ -121,10 +122,10 @@ export class BluetoothModule {
 
     // interacting per device
     async writeToPam(peripheral, data){
-        return BleManager.retrieveServices(peripheral).then((peripheralInfo) => {
+        return BleManager.retrieveServices(peripheral).then(async (peripheralInfo) => {
             console.log("Sending: " + data)
             const dataBytes = stringToBytes(data)
-            BleManager.write(
+            await BleManager.write(
                 peripheral,
                 UART_SERVICE_UUID,
                 UART_RX_CHAR_UUID,
