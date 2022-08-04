@@ -3,6 +3,7 @@ import { getGlobalContext } from '../services/AppContext';
 import type { Device } from '../models/device.js';
 import type { SpeciesObj, SpeciesType, ContentType } from '../models/speciesTypes.js';
 import type { PacketType } from '../models/packetType.js';
+import type { Setting } from '../models/settingsType.js';
 import { stringToBytes, bytesToString } from "convert-string";
 
 // start scanning for devices.
@@ -93,48 +94,74 @@ export function useDeviceManager() {
 
     const [devices: {[key : String] : Device}, updateDevices] = useReducer(reducer, {});
     
-    const parseBody = (item, updatedDevice, latitude, longitude) => {
-        if (item["type"] == "setting") {
-            console.log(item["content"]["description"])
-            if (item["content"]["type"] == "menu") {
-                for (var i = 0; i < item["content"]["items"].length; i++) {
-                    parseBody(item["content"]["items"][i])
-                }
-            }
-            else {
-                console.log("    Current Value: " + item["content"]["currentVal"])
-            }
-            if (item["content"]["id"] == "deviceId") {
-                updatedDevice.Name = Number(item["content"]["currentVal"])
+    const parseSetting = (item) => {
+        let setting: Setting = {}
+
+        setting = {
+            type: item["type"],
+            description: item["description"],
+            value: item["currentVal"],
+            isDevice: item["isDevice"],
+            id: item["id"],
+            subSettings: {},
+            options: []
+        }
+        
+        if (item["type"] == "menu") {
+            for (var i = 0; i < item["items"].length; i++) {
+                setting["subSettings"][item["items"][i]["id"]] = parseSetting(item["items"][i]);
             }
         }
-        else if (item["type"] == "measurement") {
-            let packetNum = 0
-            if (item["content"]["name"] !== "LAT" && item["content"]["name"] !== "LON" && item["content"]["name"] !== "Battery") {
-                if (updatedDevice.Species[item["content"]["name"]] == null) {
-                    updatedDevice.Species[item["content"]["name"]] = {species: {type: "measurement", content: {name: item["content"]["name"], units: item["content"]["units"]}}, packets: []};
-                }
-                else {
-                    packetNum = updatedDevice.Species[item["content"]["name"]].packets.length;
-                }
-                if (item["content"]["value"] !== "N/A") {
-                    updatedDevice.Species[item["content"]["name"]].packets.push({
-                        units: item["content"]["units"], 
-                        value: Number(item["content"]["value"]), 
-                        packetNum: packetNum, 
-                        dateTime: new Date(),
-                        location: {
-                            longitude: longitude,
-                            latitude: latitude
-                        }
-                    });
-                }
-                console.log(updatedDevice.Species[item["content"]["name"]].packets)
-            }
-            // console.log(item["content"]["name"] + ": " + item["content"]["value"] + " " + item["content"]["units"])
+        else if (item["type"] == "options") {
+            setting["options"] = item["items"];
         }
-        else if (item["type"] == "confirmation") {
-            console.log("Changed " + item["content"]["id"] + " to " + item["content"]["newValue"])
+
+        return setting;
+    }
+
+    const parseMessage = (message, updatedDevice) => {
+        if (updatedDevice["ID"] == null) {
+            updatedDevice["ID"] = Number(message["device"]);
+        }
+
+        if (message["status"] == 404) {
+            console.log(message["error"])
+        }
+        else {
+            if (message["type"] == "measurements") {
+                updatedDevice["batteryLevel"] = message["battery"];
+                for (var i = 0; i < message["body"].length; i++) {
+                    let packetNum = 0
+                    let item = message["body"][i]
+                    if (updatedDevice.Species[item["name"]] == null) {
+                        // TODO: check if any of the species info needs updating?
+                        updatedDevice.Species[item["name"]] = {species: {name: item["name"], units: item["units"]}, packets: []};
+                    }
+                    else {
+                        packetNum = updatedDevice.Species[item["name"]].packets.length;
+                    }
+                    if (item["value"] !== "N/A") {
+                        updatedDevice.Species[item["name"]].packets.push({
+                            units: item["units"],
+                            value: Number(item["value"]),
+                            packetNum: packetNum,
+                            dateTime: new Date(),
+                            location: {
+                                latitude: message["location"]["latitude"],
+                                longitude: message["location"]["longitude"]
+                            }
+                        })
+                    }
+                    // console.log(updatedDevice.Species[item["name"]].packets)
+                }
+            }
+            else if (message["type"] == "settings") {
+                for (var i = 0; i < message["body"].length; i++) {
+                    let item = message["body"][i];
+                    updatedDevice.settings[item["id"]] = parseSetting(item)
+                    // console.log(updatedDevice.settings[item["id"]])
+                }
+            }
         }
     }
     
@@ -147,24 +174,7 @@ export function useDeviceManager() {
             const updatedDevice: Device = devices[peripheral]
             console.log(message.substring(0, message.length - 3))
             let message_json = JSON.parse(message.substring(0, message.length - 3))
-            let latitude = 0;
-            let longitude = 0;
-            for (var i = 0; i < message_json["body"].length; i++) {
-                if (message_json["body"][i]["type"] == "measurement") {
-                    if (message_json["body"][i]["content"]["name"] == "LAT") {
-                        latitude = message_json["body"][i]["content"]["value"];
-                    }
-                    else if (message_json["body"][i]["content"]["name"] == "LON") {
-                        longitude = message_json["body"][i]["content"]["value"];
-                    }
-                    else if (message_json["body"][i]["content"]["name"] == "Battery") {
-                        updatedDevice["batteryLevel"] = Number(message_json["body"][i]["content"]["value"]);
-                    }
-                }
-            }
-            for (var i = 0; i < message_json["body"].length; i++) {
-                parseBody(message_json["body"][i], updatedDevice, latitude, longitude)
-            }
+            parseMessage(message_json, updatedDevice)
             message = ""
             console.log(updatedDevice)
             updateDevices({type: 'update', payload: {updatedDevice: updatedDevice, peripheral: peripheral}})

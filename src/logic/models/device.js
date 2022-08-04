@@ -1,6 +1,6 @@
 import ConnectionType from './connectionType';
 import {SpeciesObj, SpeciesType} from './speciesTypes';
-
+import {Setting} from '../models/settingsType';
 
 
 // Device type, represent physical device as object
@@ -10,10 +10,11 @@ type Device = {
     peripheralId:String;
     isConnected:Boolean;
     batteryLevel: Number;
-    peripheralId: String;
+    peripheralID: String;
     deviceType: "PAM" | "CAM" | "RemotePAM" | "NoDevice";
     connection: ConnectionType;
     Species: { [key: String] : SpeciesObj}; 
+    settings: { [key: String] : Setting};
     initialized: boolean;
 }
 
