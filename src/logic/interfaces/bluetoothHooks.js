@@ -90,7 +90,7 @@ export function useDeviceManager() {
                 default:
                     throw new Error();
             }
-        }
+    }
 
     const [devices: {[key : String] : Device}, updateDevices] = useReducer(reducer, {});
     
@@ -120,6 +120,7 @@ export function useDeviceManager() {
     }
 
     const parseMessage = (message, updatedDevice) => {
+        
         if (updatedDevice["ID"] == null) {
             updatedDevice["ID"] = Number(message["device"]);
         }
@@ -172,14 +173,33 @@ export function useDeviceManager() {
         message += bytesToString(value)
         if (message.substring(message.length - 3, message.length) == "end") {
             const updatedDevice: Device = devices[peripheral]
-            console.log(message.substring(0, message.length - 3))
+            // console.log(updatedDevice);
+            // console.log(message.substring(0, message.length - 3))
             let message_json = JSON.parse(message.substring(0, message.length - 3))
             parseMessage(message_json, updatedDevice)
             message = ""
-            console.log(updatedDevice)
+            // console.log(updatedDevice)
             updateDevices({type: 'update', payload: {updatedDevice: updatedDevice, peripheral: peripheral}})
         }
     };
+
+
+    
+
+    // useEffect for initiating listeners to listen to devices
+    useEffect(() => {
+
+        // add listener and begin Scanning
+        // GContext.Bluetooth.bleManagerEmitter.addListener('BleManagerConnectPeripheral',  handleConnectPeripheral);
+            GContext.Bluetooth.bleManagerEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',  handleUpdateValueForCharacteristic);
+        
+        return () => {
+            // remove listeners
+            // GContext.Bluetooth.bleManagerEmitter.removeListener('BleManagerConnectPeripheral',  handleConnectPeripheral);
+            GContext.Bluetooth.bleManagerEmitter.removeListener('BleManagerDidUpdateValueForCharacteristic', handleUpdateValueForCharacteristic);
+        };
+    }, []);
+
 
     const connectPrepherial = async (peripheral, intialMessage) => {
         
@@ -188,7 +208,7 @@ export function useDeviceManager() {
         await GContext.Bluetooth.writeToPam(peripheral.id, intialMessage);
 
         // update state with infromation 
-        const newDevice: Device = {peripheralId: peripheral.id, Name: peripheral.name, Species: {}, initialized: false, deviceType:"PAM"};
+        const newDevice: Device = {peripheralId: peripheral.id, Name: peripheral.name, Species: {}, settings: {}, initialized: false, deviceType:"PAM"};
         updateDevices({type: 'add', payload: {newDevice: newDevice, peripheral: peripheral.id}});
 
     };
@@ -201,28 +221,12 @@ export function useDeviceManager() {
         //update statemangment
         updateDevices({type: 'remove', payload: {peripheral: peripheralID}});        
     } 
-    
-
-    // useEffect for initiating listeners to listen to devices
-    useEffect(() => {
-
-        // add listener and begin Scanning
-        // GContext.Bluetooth.bleManagerEmitter.addListener('BleManagerConnectPeripheral',  handleConnectPeripheral);
-        GContext.Bluetooth.bleManagerEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',  handleUpdateValueForCharacteristic);
-        
-        return () => {
-            // remove listeners
-            // GContext.Bluetooth.bleManagerEmitter.removeListener('BleManagerConnectPeripheral',  handleConnectPeripheral);
-            GContext.Bluetooth.bleManagerEmitter.removeListener('BleManagerDidUpdateValueForCharacteristic', handleUpdateValueForCharacteristic);
-        };
-    }, []);
-
 
     // reduce states out of devices map and return
     return { 'devices': Object.values(devices).map((e) => {
                 return e;
             }) || [],
-             'connectPrepheral':    connectPrepherial,
+             'connectPrepheral': connectPrepherial,
              'disconnectPrepheral': disconnectDevice
 };
 }

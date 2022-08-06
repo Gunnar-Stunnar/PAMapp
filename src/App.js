@@ -50,7 +50,7 @@ const App: () => Node = () => {
                         Object.keys(pages_obj_references).map(
                             
                             (key) => {
-                                console.log(pages_obj_references[key]);
+                                // console.log(pages_obj_references[key]);
 
                                 return (
                                     <Stack.Screen key={key} name={key} component={pages_obj_references[key]} />

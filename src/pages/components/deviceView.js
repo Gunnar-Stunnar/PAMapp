@@ -36,8 +36,8 @@ const SensorCell = ({sensor, style2} : SensorCellProps) => {
 
     return (
         <View style={StyleSheet.compose(style.sensorCell, style2)}>
-            <Text style={style.sensorType}>{sensor.species.type}</Text>
-            <Text style={style.sensorReading}>{last_packet.value} {sensor.species.content.units}</Text>
+            <Text style={style.sensorType}>{sensor.species.name}</Text>
+            <Text style={style.sensorReading}>{last_packet.value} {sensor.species.units}</Text>
         </View>
     );
 }

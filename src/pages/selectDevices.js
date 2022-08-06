@@ -25,7 +25,7 @@ const SelectDevices = ({navigation}) => {
     useEffect(() => {
         const filtedDevices = devices.filter(e => e?1:0);
 
-        console.log(filtedDevices);
+        // console.log(filtedDevices);
 
         updateConnectedDevices(filtedDevices)
         updateNotConnectedDevices(discoveredDevices.filter((e) => !filtedDevices.some((connected) => (e.id) == connected.peripheralId)))
