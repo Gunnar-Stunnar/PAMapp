@@ -73,7 +73,7 @@ export function useDeviceManager() {
 
     const GContext = useContext(getGlobalContext())
     // devices stored in map, mapping id (bluetooth peripheral) to device state management
-    function reducer(state, action) {
+    const reducer = (state, action) => {
             switch (action.type) {
                 case 'add':
                     state[action.payload.peripheral] = (action.payload.newDevice)
@@ -223,10 +223,8 @@ export function useDeviceManager() {
     } 
 
     // reduce states out of devices map and return
-    return { 'devices': Object.values(devices).map((e) => {
-                return e;
-            }) || [],
+    return { 'devices': devices,
              'connectPrepheral': connectPrepherial,
              'disconnectPrepheral': disconnectDevice
-};
+    };
 }

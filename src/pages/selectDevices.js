@@ -23,7 +23,7 @@ const SelectDevices = ({navigation}) => {
     const forceUpdate = React.useCallback(() => updateState({}), []);
 
     useEffect(() => {
-        const filtedDevices = devices.filter(e => e?1:0);
+        const filtedDevices = (Object.values(devices).map(e=>e) || []).filter(e => e?1:0);
 
         // console.log(filtedDevices);
 

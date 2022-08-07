@@ -25,8 +25,9 @@ const Home = ({ navigation } : HomeProps) => {
 
     // const [measurements, settings] = useDeviceInfo()
     const {devices} = useConnectedDevices();
+    
+    const devicesList = (Object.values(devices).map(e=>e) || []).filter(e => e?1:0);
 
-    console.log(devices);
 
     const viewHistory = (
         <TouchableOpacity onPress={()=>{navigation.navigate(pages.HISTORY, {})}}>
@@ -45,7 +46,7 @@ const Home = ({ navigation } : HomeProps) => {
         },
         {
             title: "Devices",
-            data:[devices.map((e,i) => <DeviceView  device={e} navigation={navigation} key={i}/>)]
+            data:[devicesList.map((e, i) => <DeviceView  device={e} navigation={navigation} key={i}/>)]
         }
     ];
 
