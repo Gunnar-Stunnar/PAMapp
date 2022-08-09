@@ -1,0 +1,176 @@
+{
+    "body": [
+        {
+            "type": "setting",
+            "content": {
+                "type": "menu",
+                "description": "Devices",
+                "currentVal": null,
+                "isDevice": false,
+                "id": null,
+                "items": [
+                    {
+                        "type": "setting",
+                        "content": {
+                            "type": "menu",
+                            "description": "CO",
+                            "currentVal": null,
+                            "isDevice": true,
+                            "deviceName": "CO",
+                            "id": "CO",
+                            "items": [
+                                {
+                                    "type": "setting",
+                                    "content": {
+                                        "type": "toggle",
+                                        "description": "Enable/Disable CO",
+                                        "currentVal": true,
+                                        "isDevice": true,
+                                        "deviceName": "CO",
+                                        "id": "CO"
+                                    }
+                                },
+                                {
+                                    "type": "setting",
+                                    "content": {
+                                        "type": "open",
+                                        "description": "CO Slope",
+                                        "currentVal": 1,
+                                        "isDevice": true,
+                                        "deviceName": "CO",
+                                        "id": "COSLOPE"
+                                    }
+                                },
+                                {
+                                    "type": "setting",
+                                    "content": {
+                                        "type": "open",
+                                        "description": "CO Zero",
+                                        "currentVal": 1,
+                                        "isDevice": true,
+                                        "deviceName": "CO",
+                                        "id": "COZERO"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": "setting",
+                        "content": {
+                            "type": "menu",
+                            "description": "PM",
+                            "currentVal": null,
+                            "isDevice": true,
+                            "deviceName": "PM",
+                            "id": "PM",
+                            "items": [
+                                {
+                                    "type": "setting",
+                                    "content": {
+                                        "type": "toggle",
+                                        "description": "Enable/Disable PM",
+                                        "currentVal": true,
+                                        "isDevice": true,
+                                        "deviceName": "PM",
+                                        "id": "PM"
+                                    }
+                                },
+                                {
+                                    "type": "setting",
+                                    "content": {
+                                        "type": "open",
+                                        "description": "PM1 Slope",
+                                        "currentVal": 1,
+                                        "isDevice": true,
+                                        "deviceName": "PM1",
+                                        "id": "PM1SLOPE"
+                                    }
+                                },
+                                {
+                                    "type": "setting",
+                                    "content": {
+                                        "type": "open",
+                                        "description": "PM1 Zero",
+                                        "currentVal": 1,
+                                        "isDevice": true,
+                                        "deviceName": "PM1",
+                                        "id": "PM1ZERO"
+                                    }
+                                },
+                                {
+                                    "type": "setting",
+                                    "content": {
+                                        "type": "open",
+                                        "description": "PM2.5 Slope",
+                                        "currentVal": 1,
+                                        "isDevice": true,
+                                        "deviceName": "PM2.5",
+                                        "id": "PM2.5SLOPE"
+                                    }
+                                },
+                                {
+                                    "type": "setting",
+                                    "content": {
+                                        "type": "open",
+                                        "description": "PM2.5 Zero",
+                                        "currentVal": 1,
+                                        "isDevice": true,
+                                        "deviceName": "PM2.5",
+                                        "id": "PM2.5ZERO"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "setting",
+            "content": {
+                "type": "open",
+                "description": "Device ID",
+                "currentVal": "1",
+                "isDevice": false,
+                "id": "deviceId"
+            }
+        },
+        {
+            "type": "setting",
+            "content": {
+                "type": "value",
+                "description": "Build Version",
+                "currentVal": "1",
+                "isDevice": false,
+                "id": "version"
+            }
+        },
+        {
+            "type": "setting",
+            "content": {
+                "type": "toggle",
+                "description": "Cellular",
+                "currentVal": true,
+                "isDevice": false,
+                "id": "cellular"
+            }
+        },
+        {
+            "type": "setting",
+            "content": {
+                "type": "options",
+                "description": "Temperature Units",
+                "currentVal": "fahrenheit",
+                "isDevice": false,
+                "id": "tempUnits",
+                "items": [
+                    "fahrenheit",
+                    "celsius"
+                ]
+            }
+        }
+    ],
+    "status": 200,
+    "error": ""
+}

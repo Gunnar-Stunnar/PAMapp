@@ -23,10 +23,10 @@ interface HomeProps {
 
 const Home = ({ navigation } : HomeProps) => {
 
-    // const [measurements, settings] = useDeviceInfo()
-    const {devices} = useConnectedDevices();
     
-    const devicesList = (Object.values(devices).map(e=>e) || []).filter(e => e?1:0);
+    
+    
+    const devicesList = [];
 
 
     const viewHistory = (

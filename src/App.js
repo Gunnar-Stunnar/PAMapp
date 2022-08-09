@@ -13,30 +13,33 @@ import {useEffect} from "react";
 import type {Node} from 'react';
 
 import { pages_obj_references } from './pages/nav'
-import {initializeGlobalContext, getGlobalContext} from './logic/services/AppContext';
+
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { useDeviceManager } from './logic/interfaces/bluetoothHooks';
+
 
 import { LogBox } from "react-native";
+import { Provider } from 'react-redux';
+
+import { store } from './reduxLogic/stateStore';
+
+import {initiateBLE} from './reduxLogic/stateStore';
 
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 
 const Stack = createNativeStackNavigator();
-const init_value = initializeGlobalContext();
+
+// initialize Bluetooth Listeners 
+initiateBLE(store.dispatch);
 
 const App: () => Node = () => {
 
     // initialize adapters 
-    const GContext = getGlobalContext();
-
-    const deviceManager = useDeviceManager();
-    init_value.MemoryStorage = deviceManager;
 
     return (
-        <GContext.Provider value={init_value}>
+        <Provider store={store}>
             <SafeAreaProvider>
                 <NavigationContainer>
                 <Stack.Navigator
@@ -63,7 +66,7 @@ const App: () => Node = () => {
                 </Stack.Navigator>
                 </NavigationContainer>
             </SafeAreaProvider>
-            </GContext.Provider>
+        </Provider>
       );
  
 };

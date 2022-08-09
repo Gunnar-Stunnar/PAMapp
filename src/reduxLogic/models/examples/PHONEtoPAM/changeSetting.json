@@ -1,0 +1,16 @@
+{
+    "command": 101,
+    "body": [
+        {
+            "id": "timezone",
+            "newValue": "-8",
+            "isDevice": false
+        },
+        {
+            "id": "COSLOPE", 
+            "newValue": 2,
+            "isDevice": true,
+            "deviceName": "CO"
+        }   
+    ]
+}

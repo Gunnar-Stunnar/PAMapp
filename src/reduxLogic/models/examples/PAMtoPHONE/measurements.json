@@ -1,0 +1,86 @@
+{
+    "body": [
+        {
+            "type": "measurement",
+            "content": {
+                "name": "CO",
+                "value": "-0.01",
+                "units": "ppm"
+            }
+        },
+        {
+            "type": "measurement",
+            "content": {
+                "name": "PM1",
+                "value": "unset",
+                "units": "UGM3"
+            }
+        },
+        {
+            "type": "measurement",
+            "content": {
+                "name": "PM2.5",
+                "value": "unset",
+                "units": "UGM3"
+            }
+        },
+        {
+            "type": "measurement",
+            "content": {
+                "name": "PM10",
+                "value": "unset",
+                "units": "UGM3"
+            }
+        },
+        {
+            "type": "measurement",
+            "content": {
+                "name": "VOC",
+                "value": "0.0",
+                "units": "ppm"
+            }
+        },
+        {
+            "type": "measurement",
+            "content": {
+                "name": "CO2",
+                "value": "669",
+                "units": "ppm"
+            }
+        },
+        {
+            "type": "measurement",
+            "content": {
+                "name": "RELHUM",
+                "value": "34.62",
+                "units": "%"
+            }
+        },
+        {
+            "type": "measurement",
+            "content": {
+                "name": "TEMP",
+                "value": "21.72",
+                "units": "C"
+            }
+        },
+        {
+            "type": "measurement",
+            "content": {
+                "name": "PRESS",
+                "value": "828.44",
+                "units": "HPA"
+            }
+        },
+        {
+            "type": "measurement",
+            "content": {
+                "name": "Battery",
+                "value": "42.82",
+                "units": "V"
+            }
+        }
+    ],
+    "status": 200,
+    "error": ""
+}

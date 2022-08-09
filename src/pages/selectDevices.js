@@ -9,29 +9,30 @@ import DeviceSelect from './components/deviceSelect';
 import { useScanning, useConnectedDevices } from '../logic/interfaces/bluetoothHooks';
 import type { Device } from '../logic/models/device';
 
+import { useDispatch, useSelector } from 'react-redux';
+
+import { scanDevices, connectDevices } from '../reduxLogic/middleware/bluetoothMiddleWare';
+
+
 
 const SelectDevices = ({navigation}) => {
 
-    const [discoveredDevices, isScanning, reload] = useScanning();
-    const {devices, connectPrepheral, disconnectPrepheral} = useConnectedDevices();
-
+    const dispatch = useDispatch();
+    const { Devices, DeviceDiscovery } = useSelector((state: RootState) => state.deviceManager);
     
-    const [connectedDevices, updateConnectedDevices] = useState([]);
-    const [notConnectedDevices, updateNotConnectedDevices] = useState([]);
 
-    const [force, updateState] = React.useState();
-    const forceUpdate = React.useCallback(() => updateState({}), []);
 
-    useEffect(() => {
-        const filtedDevices = (Object.values(devices).map(e=>e) || []).filter(e => e?1:0);
+    const connectedDevices = Devices || [];
+    const notConnectedDevices = DeviceDiscovery.discoveredDevices.filter((e) => !connectedDevices.some((connected) => e.id == connected.peripheralId));
 
-        // console.log(filtedDevices);
+    useEffect(()=> {
+        dispatch(scanDevices());
+    },[])
+    
 
-        updateConnectedDevices(filtedDevices)
-        updateNotConnectedDevices(discoveredDevices.filter((e) => !filtedDevices.some((connected) => (e.id) == connected.peripheralId)))
-
-    }, [devices, discoveredDevices, force]);
-
+    const connectDeviceHelper = (peripheral) => {
+        dispatch(connectDevices(peripheral));
+    }
 
     // function scan() {
     //     [discoveredDevices, isScanning, reload] = useScanning()
@@ -64,7 +65,7 @@ const SelectDevices = ({navigation}) => {
                     title : e.name,
                     id: e.id,
                     selected: false,
-                    deviceAction: async () => await connectPrepheral(e, '{"command": 100, "body": "none"}').catch((e)=> console.log("---"+e))
+                    deviceAction: ()=>connectDeviceHelper(e)//async () => await connectPrepheral(e, '{"command": 100, "body": "none"}').catch((e)=> console.log("---"+e))
                 }
             })
         }
